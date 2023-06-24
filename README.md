@@ -25,7 +25,13 @@ Clone the installed Windows Standard Server, start it up and make sure that all 
 Use `sconfig` for:
 - change hostname (if needed)
 - change IP address to static
-- change DNS IP to the server itself.
 
 Use the following command to install Directory Services:
-Install-WindowsFeature AD-Domain-Services -IncludeManagementTools
+`Install-WindowsFeature AD-Domain-Services -IncludeManagementTools`
+
+Configure the server:
+`Import-Module ADDSDeployment`
+`Install-ADDSForest`
+
+Use `sconfig` for:
+- change DNS IP to the server itself.
