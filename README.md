@@ -35,3 +35,34 @@ Configure the server:
 
 Use `sconfig` for:
 - change DNS IP to the server itself.
+
+### 04. Setting up the first workstation
+Clone the Windows 11 VM. Please note: as it is a clone, all settings are exactly the same as the original VM, so it is required to
+modify the DNS settings.
+`Get-DnsClientServerAddress` - this provides the interface number and the currently set DNS server address. If it's incorrect, it
+will not find the Domain Controller.
+`Set-DnsClientServerAddress -InterfaceIndex <index number> -ServerAddresses <DC address>` - this will set the correct DNS address.
+
+At this time, the workstation is ready to join, so type:
+`Add-Computer -DomainName <Domain FQDN> -Credential <domain\Administrator> -Force -Restart`
+Upon successful join, the client will reboot. However, there is at least one thing: the computer name is still the original one
+and it has to be changed. After such a change, the client must be rebooted. Type in:
+`Rename-Computer -NewName "<new client name>" -DomainCredential <domain\Administrator> -Restart`
+
+### 05. Create GPO for Powershell logging
+There are two reasons for it:
+- maintain some form of powershell history across sessions as it is not the default behavior
+- increase security as auditing can be set for eventlog entries.
+
+Follow these steps:
+- open Group Policy Management on the DC
+- right click on `Group Policy Objects`
+- click `New`, name it, click `OK`
+- right click the new GPO and choose `Edit...` - this opens up the Group Policy Object Editor
+- click through `Computer Configuration > Administrative Templates > Windows Components > Windows PowerShell`
+- Enable Module Logging, click on `Show...` and set it to "*" - this sets up Eventlog logging
+- Enable Powershell Transcription and set the logging directory (by default, the user's My Documents folder is used) - this is for the transcription
+- hit `Apply` and `OK`
+- right click on your domain, click on `Link an Existing GPO...` and choose your newly created policy
+
+The replication might take a while - 10-30 minutes.
