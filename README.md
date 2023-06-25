@@ -68,13 +68,13 @@ Follow these steps:
 The replication might take a while - 10-30 minutes.
 
 ### 06. Seed the AD environment with random data
-To be able to do anything with this environment, it should look like a living system, therefore it is required to seed it with random data - users, groups, passwords (these can be found in `code > data`). It can be done easily, except the passwords. The default password policy requires some sort of complexity, therefore it is required to disable it - at least temporarily. Code for disabling it:
+To be able to do anything with this environment, it should look like a living system, therefore it is required to seed it with random data - users, groups, passwords. It can be done easily, except the passwords. The default password policy requires some sort of complexity, therefore it is required to disable it - at least temporarily. Code for disabling it:\
 `secedit /export /cfg C:\Windows\Tasks\secpol.cfg`\
 `(Get-Content C:\Windows\Tasks\secpol.cfg).replace("PasswordComplexity = 1", "PasswordComplexity = 0").replace("MinimumPasswordLength = 7", "MinimumPasswordLength = 1") | Out-File C:\Windows\Tasks\secpol.cfg`\
 `secedit /configure /db c:\windows\security\local.sdb /cfg C:\Windows\Tasks\secpol.cfg /areas SECURITYPOLICY`\
 `rm -force C:\Windows\Tasks\secpol.cfg -confirm:$false`
 
-Enable it again:
+Enable it again:\
 `secedit /export /cfg C:\Windows\Tasks\secpol.cfg`\
 `(Get-Content C:\Windows\Tasks\secpol.cfg).replace("PasswordComplexity = 0", "PasswordComplexity = 1").replace("MinimumPasswordLength = 1", "MinimumPasswordLength = 7") | Out-File C:\Windows\Tasks\secpol.cfg`\
 `secedit /configure /db c:\windows\security\local.sdb /cfg C:\Windows\Tasks\secpol.cfg /areas SECURITYPOLICY`\
