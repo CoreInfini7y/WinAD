@@ -5,7 +5,12 @@ function CreateADGroup() {
     param([Parameter(Mandatory = $true)] $groupObject)
 
     $groupName = $groupObject.name
-    New-ADGroup -name $groupName -GroupScope Global
+    try {
+        New-ADGroup -name $groupName -GroupScope Global
+    }
+    catch {
+        write-warning "The group may already exists"
+    }
 }
 
 function CreateADUser() {
@@ -22,7 +27,13 @@ function CreateADUser() {
     $principalName = $userName
 
     # Create the AD user
-    New-ADUser -Name $userName -GivenName $firstName -Surname $lastName -SamAccountname $samAccountName -UserPrincipalName $principalName@$domain -AccountPassword (ConvertTo-SecureString $password -AsPlainText -Force) | Enable-ADAccount
+    try {
+        New-ADUser -Name $userName -GivenName $firstName -Surname $lastName -SamAccountname $samAccountName -UserPrincipalName $principalName@$domain -AccountPassword (ConvertTo-SecureString $password -AsPlainText -Force) | Enable-ADAccount
+    }
+    catch {
+        Write-Warning "The user already exists"
+    }
+
 
     # Add to group(s)
     foreach ($group in $userObject.groups) {
