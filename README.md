@@ -14,9 +14,9 @@ Install the OS normally (disable all privacy related rubbish), at the account cr
 Click on `Sign in options` and set `Work or school account`. Also, the computer should be set and joining to a Domain. These steps 
 will preserve independency from Microsoft online services.
 After theinstallation has been done, shut down the client and edit VM settings. The order is the following:
-- remove encryption (this can be done on the hypervisor level)
-- remove TPM hardware
-- Enable Template Mode.
+- remove encryption (this should be done on the hypervisor level)
+- remove TPM hardware (this should be done on the hypervisor level)
+- Enable Template Mode. (this should be done on the hypervisor level)
 
 NOTE: install VMware Tools on both systems for simplifying your job.
 
@@ -66,3 +66,18 @@ Follow these steps:
 - right click on your domain, click on `Link an Existing GPO...` and choose your newly created policy
 
 The replication might take a while - 10-30 minutes.
+
+### 06. Seed the AD environment with random data
+To be able to do anything with this environment, it should look like a living system, therefore it is required to seed it with random data - users, groups, passwords (these can be found in `code > data`). It can be done easily, except the passwords. The default password policy requires some sort of complexity, therefore it is required to disable it - at least temporarily. Code for disabling it:
+`secedit /export /cfg C:\Windows\Tasks\secpol.cfg
+ (Get-Content C:\Windows\Tasks\secpol.cfg).replace("PasswordComplexity = 1", "PasswordComplexity = 0").replace("MinimumPasswordLength = 7", "MinimumPasswordLength = 1") | Out-File C:\Windows\Tasks\secpol.cfg
+ secedit /configure /db c:\windows\security\local.sdb /cfg C:\Windows\Tasks\secpol.cfg /areas SECURITYPOLICY
+ rm -force C:\Windows\Tasks\secpol.cfg -confirm:$false`
+
+ Enable it again:
+ `secedit /export /cfg C:\Windows\Tasks\secpol.cfg
+  (Get-Content C:\Windows\Tasks\secpol.cfg).replace("PasswordComplexity = 0", "PasswordComplexity = 1").replace("MinimumPasswordLength = 1", "MinimumPasswordLength = 7") | Out-File C:\Windows\Tasks\secpol.cfg
+  secedit /configure /db c:\windows\security\local.sdb /cfg C:\Windows\Tasks\secpol.cfg /areas SECURITYPOLICY
+  rm -force C:\Windows\Tasks\secpol.cfg -confirm:$false`
+
+  Another option is to use the GUI if Windows Server Desktop is installed.
