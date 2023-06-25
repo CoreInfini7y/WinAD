@@ -3,16 +3,23 @@
     
     "groups" : [
         {
-            "name": "Engineering"
+            "name": "Employees"
         }
     ],
 
     "users" : [
         {
-            "name": "Core Sec",
-            "password": "literallyanything",
+            "name": "Alice Lice",
+            "password": "P@ssword789",
             "groups": [
-                "Engineering"
+                "Employees"
+            ]
+        },
+        {
+            "name": "Bob Ob",
+            "password": "P@sswordABC",
+            "groups": [
+                "Employees"
             ]
         }
     ]

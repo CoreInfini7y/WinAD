@@ -1,8 +1,5 @@
-
-
-Import-Module ActiveDirectory
-
 param([Parameter(Mandatory = $true)] $jsonFile)
+
 
 function CreateADGroup() {
     param([Parameter(Mandatory = $true)] $groupObject)
@@ -25,16 +22,23 @@ function CreateADUser() {
     $principalName = $userName
 
     # Create the AD user
-    New-ADUser -Name $userName -GivenName $firstName -Surname $lastName -SamAccountname $samAccountName -UserPrincipalName $principalName@$Global:Domain -AccountPassword (ConvertTo-SecureString $password -AsPlainText -Force) | Enable-ADAccount
+    New-ADUser -Name $userName -GivenName $firstName -Surname $lastName -SamAccountname $samAccountName -UserPrincipalName $principalName@$domain -AccountPassword (ConvertTo-SecureString $password -AsPlainText -Force) | Enable-ADAccount
 
     # Add to group(s)
     foreach ($group in $userObject.groups) {
-        Add-AdGroupMember -Identity $group -Members $userName
+        try {
+            Add-AdGroupMember -Identity $group -Members $userName
+        }
+        catch [Microsodt.ActiveDirectory.Management.ADIdentityNotFooundException] {
+            Write-Warning "AD group object not found"
+        }
+        
     }
     
 }
 
 $json = (Get-Content $jsonFile | ConvertFrom-Json)
+$domain = $json.domain
 
 foreach ($group in $json.groups) {
     CreateADGroup $group
