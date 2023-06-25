@@ -1,0 +1,19 @@
+{
+    "domain" : "CI.tech",
+    
+    "groups" : [
+        {
+            "name": "Engineering"
+        }
+    ],
+
+    "users" : [
+        {
+            "name": "Core Sec",
+            "password": "literallyanything",
+            "groups": [
+                "Engineering"
+            ]
+        }
+    ]
+}
