@@ -24,17 +24,18 @@ NOTE: install VMware Tools on both systems for simplifying your job.
 Clone the installed Windows Standard Server, start it up and make sure that all updates have been installed. Reboot.
 Use `sconfig` for:
 - change hostname (if needed)
-- change IP address to static
+- change server IP address to static
+- change DNS IP to the server itself.
 
 Use the following command to install Directory Services:
 `Install-WindowsFeature AD-Domain-Services -IncludeManagementTools`
+
+NOTE: my experience is that at least ADUC will not work if installed from any CLI - use a GUI tools instead.
 
 Configure the server:
 `Import-Module ADDSDeployment`
 `Install-ADDSForest`
 
-Use `sconfig` for:
-- change DNS IP to the server itself.
 
 ### 04. Setting up the first workstation
 Clone the Windows 11 VM. Please note: as it is a clone, all settings are exactly the same as the original VM, so it is required to
