@@ -50,6 +50,9 @@ Upon successful join, the client will reboot. However, there is at least one thi
 and it has to be changed. After such a change, the client must be rebooted. Type in:
 `Rename-Computer -NewName "<new client name>" -DomainCredential <domain\Administrator> -Restart`
 
+NOTE: if a management client should present in the environment without joining the domain, `Enable-PSRemoting` on the DC first, then
+configure the client to trust in the server by issuing `set-item wsman:\localhost\Client\TrustedHosts -value <DC IP>`.
+
 ### 05. Create GPO for Powershell logging
 There are two reasons for it:
 - maintain some form of powershell history across sessions as it is not the default behavior
@@ -60,7 +63,7 @@ Follow these steps:
 - right click on `Group Policy Objects`
 - click `New`, name it, click `OK`
 - right click the new GPO and choose `Edit...` - this opens up the Group Policy Object Editor
-- click through `Computer Configuration > Administrative Templates > Windows Components > Windows PowerShell`
+- click through `Computer Configuration > Policies > Administrative Templates > Windows Components > Windows PowerShell`
 - Enable Module Logging, click on `Show...` and set it to "*" - this sets up Eventlog logging
 - Enable Powershell Transcription and set the logging directory (by default, the user's My Documents folder is used) - this is for the transcription
 - hit `Apply` and `OK`
